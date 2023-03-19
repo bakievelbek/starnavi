@@ -41,7 +41,7 @@ uvicorn main:app --reload
 python main.py
 ```
 
-6. Enjoy
+6. Enjoy using `http://127.0.0.1:8000` link to test API in Swagger
 
 ### Bot
 

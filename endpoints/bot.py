@@ -38,6 +38,7 @@ class Bot:
             'Authorization': f"Bearer {json.loads(response.content)['access_token']}",
             'Content-Type': 'application/json'}
 
+        print('Superuser authenticated')
         self.create_users()
 
     def create_users(self):
@@ -55,6 +56,8 @@ class Bot:
                 self.users.append(payload)
             number_of_users_in_db = self.get_number_of_users()
 
+        print('Users are created')
+
         self.login_users()
 
     def login_users(self):
@@ -71,6 +74,8 @@ class Bot:
 
         self.create_post()
 
+        print('Users are loggen in')
+
     def create_post(self):
         for user in self.users:
             max_posts = random.randint(1, self.max_posts_per_user)
@@ -84,6 +89,8 @@ class Bot:
 
         self.like_post()
 
+        print('Posts are created')
+
     def like_post(self):
         posts = self.get_posts()
         for user in self.users:
@@ -92,6 +99,8 @@ class Bot:
             for liked_post in liked_posts:
                 requests.request("PATCH", self.likes_link, headers=user['headers'],
                                  data=json.dumps({"post_id": liked_post['id']}))
+
+        print('Posts are liked')
 
     def get_number_of_users(self):
         response = requests.request("GET", self.users_count_link, headers=self.super_user_credentials['headers'])
