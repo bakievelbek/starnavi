@@ -1,3 +1,4 @@
+import datetime
 from datetime import timedelta
 from typing import Any
 
@@ -25,6 +26,9 @@ async def login_access_token(
     user = crud.user.authenticate(
         db=db, email=form_data.username, password=form_data.password
     )
+
+    action_data = {"user_id": user.id, "action_type": 'login', 'created_at': datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
 
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")

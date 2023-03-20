@@ -22,6 +22,10 @@ async def read_posts(
     """
     Fetch list of Posts
     """
+    action_data = {"user_id": current_user.id,
+                   "action_type": 'Read posts',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
 
     return crud.post.get_multi(db=db, skip=skip, limit=limit)
 
@@ -53,6 +57,10 @@ async def read_post_by_id(
         raise HTTPException(
             status_code=404, detail="The post is not found"
         )
+    action_data = {"user_id": current_user.id,
+                   "action_type": 'Read post',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
     return post
 
 
@@ -70,6 +78,12 @@ async def create_post(
     post_in.author_id = current_user.id
 
     post = crud.post.create(db, obj_in=post_in)
+
+    action_data = {"user_id": current_user.id,
+                   "action_type": f'Create post ID - {post.id}',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
+
     return post
 
 
@@ -96,6 +110,12 @@ async def update_post(
     post_in.updated_at = datetime.datetime.now()
 
     post = crud.post.update(db, db_obj=post, obj_in=post_in)
+
+    action_data = {"user_id": current_user.id,
+                   "action_type": f'Update post ID - {post}',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
+
     return post
 
 
@@ -116,4 +136,10 @@ async def delete_post(
         )
 
     post = crud.post.remove(db=db, id=post_id)
+
+    action_data = {"user_id": current_user.id,
+                   "action_type": f'Delete post ID - {post.id}',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
+
     return post

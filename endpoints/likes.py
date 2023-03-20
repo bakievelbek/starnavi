@@ -1,6 +1,7 @@
 import schemas
 import crud
 import models
+import datetime
 
 from typing import Optional, List
 from fastapi import APIRouter, Depends, HTTPException
@@ -43,8 +44,19 @@ async def like_and_unlike(
     if not like:
         like_in.user_id = current_user.id
         like = crud.like.create(db, obj_in=like_in)
+
+        action_data = {"user_id": current_user.id,
+                       "action_type": f'Like post ID - {post.id}',
+                       "created_at": datetime.datetime.now()}
+        crud.action.create(db=db, obj_in=action_data)
+
         return like
 
     like = crud.like.remove(db=db, id=like.id)
+
+    action_data = {"user_id": current_user.id,
+                   "action_type": f'Unlike post ID - {post.id}',
+                   "created_at": datetime.datetime.now()}
+    crud.action.create(db=db, obj_in=action_data)
 
     return like
