@@ -20,7 +20,7 @@ async def read_posts(
         current_user: models.User = Depends(deps.get_current_user),  # noqa
 ) -> List[schemas.Post]:
     """
-    Fetch list of Posts
+    Fetch list of Posts.
     """
     action_data = {"user_id": current_user.id,
                    "action_type": 'Read posts',
@@ -36,7 +36,7 @@ async def posts_count_per_user(
         current_user: models.User = Depends(deps.get_current_user),  # noqa
 ) -> Any:
     """
-    Fetch list of Posts
+    Fetch list of Posts.
     """
 
     return crud.post.get_count_by_user(db=db, author_id=current_user.id)
@@ -49,7 +49,7 @@ async def read_post_by_id(
         db: Session = Depends(deps.get_db)
 ) -> schemas.Post:
     """
-    Get Post by id
+    Get Post by id.
     """
 
     post = crud.post.get(db=db, id=post_id)
@@ -72,7 +72,7 @@ async def create_post(
         current_user: models.User = Depends(deps.get_current_user),
 ) -> schemas.Post:
     """
-    Create a new Post
+    Create a new Post.
     """
 
     post_in.author_id = current_user.id
@@ -96,7 +96,7 @@ async def update_post(
         current_user: models.User = Depends(deps.get_current_user),
 ) -> schemas.Post:
     """
-    Update a Post
+    Update a Post.
     """
     post = crud.post.get(db=db, id=post_id)
     if not post:
@@ -126,6 +126,9 @@ async def delete_post(
         post_id: int,
         current_user: models.User = Depends(deps.get_superuser),  # noqa
 ) -> schemas.Post:
+    """
+    Delete post by post_id]
+    """
     post = crud.post.get(db=db, id=post_id)
     if not post:
         raise HTTPException(status_code=404, detail="No Post found")

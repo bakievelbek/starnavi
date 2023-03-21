@@ -27,13 +27,23 @@ class Bot:
     super_user_credentials: dict = {}
 
     def super_user_login(self):
+        # Starting point of bot to get number of users in db
+
+        # Create headers
+
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
         }
+
+        # Create data for login request
+
         self.super_user_credentials = {
             "username": os.getenv('FIRST_SUPERUSER_EMAIL'),
             "password": os.getenv('FIRST_SUPERUSER_PASSWORD')
         }
+
+        # Make request with super_user_credentials
+
         response = requests.request("POST", self.login_link, headers=headers,
                                     data=self.super_user_credentials)
         self.super_user_credentials['headers'] = {
@@ -41,11 +51,15 @@ class Bot:
             'Content-Type': 'application/json'}
 
         print('Superuser authenticated')
+
         self.create_users()
 
     def create_users(self):
+        # Follow config file restrictions
         number_of_users_in_db = self.get_number_of_users()
         while number_of_users_in_db < self.number_of_users:
+
+            # Create fake data using PyFaker lib
             payload = {
                 "email": fake.email(),
                 "password": fake.password(),
@@ -55,6 +69,9 @@ class Bot:
             }
             response = requests.request("POST", self.sign_up_api_link, headers=headers, data=json.dumps(payload))
             if response.status_code == 200:
+
+                # Store every user data for further requests
+
                 self.users.append(payload)
             number_of_users_in_db = self.get_number_of_users()
 
@@ -80,7 +97,10 @@ class Bot:
 
     def create_post(self):
         for user in self.users:
+            # Get random number of posts from 1 to max_posts_per_user
+
             max_posts = random.randint(1, self.max_posts_per_user)
+
             while self.number_of_posts_per_user(user) != max_posts:
                 post_data = {
                     "title": fake.sentence(nb_words=6, variable_nb_words=True),
@@ -97,6 +117,9 @@ class Bot:
     def like_post(self):
         posts = self.get_posts()
         for user in self.users:
+
+            # Get random number of likes from 1 to max_likes_per_user
+
             max_likes = random.randint(1, self.max_likes_per_user)
             liked_posts = random.sample(posts, max_likes)
             for liked_post in liked_posts:

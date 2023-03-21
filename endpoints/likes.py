@@ -19,7 +19,7 @@ async def read_likes(
         current_user: models.User = Depends(deps.get_superuser),  # noqa
 ) -> List[schemas.Like]:
     """
-    Fetch list of Likes
+    Fetch list of Likes.
     """
     return crud.like.get_multi(db=db, skip=skip, limit=limit)
 
@@ -31,7 +31,7 @@ async def like_and_unlike(
         current_user: models.User = Depends(deps.get_current_user),
 ) -> schemas.Like:
     """
-    Like of unlike post
+    Like of unlike post.
     """
     post = crud.post.get(db=db, id=like_in.post_id)
     if not post:
