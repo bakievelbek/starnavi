@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import date
 from pydantic import BaseModel
 from typing import Optional
 
 
 class LikeBase(BaseModel):
     post_id: int
-    created_at: Optional[datetime] = datetime.now()
+    created_at: Optional[date] = date.today()
 
 
 class LikeCreate(LikeBase):

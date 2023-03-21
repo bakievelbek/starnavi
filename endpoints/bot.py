@@ -1,8 +1,10 @@
 import os
-
 import random
 import requests
 import json
+
+from datetime import datetime, timedelta
+
 from dotenv import load_dotenv
 from faker import Faker
 
@@ -81,11 +83,12 @@ class Bot:
             max_posts = random.randint(1, self.max_posts_per_user)
             while self.number_of_posts_per_user(user) != max_posts:
                 post_data = {
-                    'title': fake.sentence(nb_words=6, variable_nb_words=True),
-                    'content': fake.paragraph(nb_sentences=random.randint(5, 10)),
+                    "title": fake.sentence(nb_words=6, variable_nb_words=True),
+                    "content": fake.paragraph(nb_sentences=random.randint(5, 10)),
+                    "created_at": self.get_random_date(from_year=2023, to_year=2024, date=True)
                 }
                 requests.request("POST", self.post_link, headers=user['headers'],
-                                 data=json.dumps(post_data))
+                                 data=json.dumps(post_data, indent=4, sort_keys=True, default=str))
 
         self.like_post()
 
@@ -97,8 +100,12 @@ class Bot:
             max_likes = random.randint(1, self.max_likes_per_user)
             liked_posts = random.sample(posts, max_likes)
             for liked_post in liked_posts:
+                like_data = {"post_id": liked_post['id'],
+                             "created_at": self.get_random_date(from_year=2024, to_year=2025,
+                                                                date=True)}
                 requests.request("PATCH", self.likes_link, headers=user['headers'],
-                                 data=json.dumps({"post_id": liked_post['id']}))
+                                 data=json.dumps(like_data, indent=4,
+                                                 sort_keys=True, default=str))
 
         print('Posts are liked')
 
@@ -116,6 +123,26 @@ class Bot:
         response = requests.request("GET", self.posts_count_link, headers=user['headers'])
         count = (json.loads(response.content))
         return count
+
+    @staticmethod
+    def get_random_date(from_year, to_year, date):
+
+        # Define the start and end datetime values for the random range
+        start_date = datetime(from_year, 3, 25)
+        end_date = datetime(to_year, 12, 31)
+
+        # Calculate the total number of seconds in the range
+        total_seconds = (end_date - start_date).total_seconds()
+
+        # Generate a random number of seconds within the range
+        random_seconds = random.randrange(int(total_seconds))
+
+        # Create a datetime value by adding the random number of seconds to the start date
+        random_datetime = start_date + timedelta(seconds=random_seconds)
+        if date:
+            return random_datetime.date()
+        # Print the random datetime value
+        return random_datetime
 
 
 bot = Bot()

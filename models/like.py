@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from db.base_class import Base
 
@@ -11,4 +11,4 @@ class Like(Base):
     user = relationship("User", back_populates="like")
     post_id = Column(Integer, ForeignKey("posts.id"))
     post = relationship("Post", back_populates="like")
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(Date, nullable=False)

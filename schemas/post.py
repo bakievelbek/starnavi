@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Optional
 from pydantic import BaseModel
 
@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class PostBase(BaseModel):
     title: str
     content: Optional[str] = None
-    created_at: Optional[datetime] = datetime.now()
+    created_at: Optional[date] = date.today()
     author_id: Optional[int] = None
 
 
@@ -15,7 +15,7 @@ class PostCreate(PostBase):
 
 
 class PostUpdate(PostBase):
-    updated_at: Optional[datetime] = datetime.now()
+    updated_at: Optional[date] = date.today()
 
 
 class PostInDBBase(PostBase):
